@@ -1,3 +1,4 @@
+#Row Transpositional Cipher
 import sys
 import re
 import os
@@ -21,32 +22,37 @@ encDec = sys.argv[5]
 
 
 if __name__ == "__main__":
+    #Condition 1
     #Check the condition of <keylength> must match the length of <key>
-    if keyLength != len(keyList):
-        raise ValueError("Key Length is not equal to number of keys")
+    if keyLength != len(keyList) or keyLength > 9:
+        raise ValueError("Key Length is not equal to number of keys or it is greater than 9")
     
+    #Condition 2
     #Check the condition <key> must include all digits from 1 to <keylength> with each digit occurring exactly once
-    for i in range(1, keyLength):
+    for i in range(1, keyLength + 1):
         if i not in keyList:
             raise ValueError("Not all the digits from 1 to key length are included in the key")
 
-    #Check the condition <inputfile> must contain only lowercase letters (a-z) or digits (0-9)
-    if not re.match(pattern, inputFile):
-        raise ValueError("Input file name contains other characters than a-z and 0-9")
-    
     #Read the input file here
     try:
         with open(inputFile, 'r') as file:
             #Read the text from the file
             text = file.read()
-    
-    #Handle exception
-    except:
-        raise ValueError("File is not present or not openeing")
+
+        #Condition 3
+        #Check if the text contains a-z and 0-9
+        if not re.match(pattern, text):
+            raise ValueError("File does contain the characters other than a-z and 0-9")
+        
+    #Handle I/O exception and FileExistsError
+    except FileNotFoundError:
+        raise ValueError("File is not present")
+    except IOError:
+        raise ValueError("File is not opening")
     
     #Encryption
     if encDec == "enc":
-        #Append extra z to the text here
+        #Append filler z to the text here
         if len(text) % keyLength != 0:
             text = text + "".join(['z'] * (keyLength - (len(text) % keyLength)))
             
